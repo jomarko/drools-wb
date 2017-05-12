@@ -28,6 +28,7 @@ import org.drools.workbench.services.verifier.api.client.Status;
 import org.drools.workbench.services.verifier.api.client.reporting.CheckType;
 import org.drools.workbench.services.verifier.api.client.reporting.Issue;
 import org.drools.workbench.services.verifier.api.client.reporting.Severity;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -38,8 +39,10 @@ import org.uberfire.client.mvp.PlaceManager;
 import org.uberfire.mocks.EventSourceMock;
 import org.uberfire.mvp.PlaceRequest;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
+
 
 @RunWith(GwtMockitoTestRunner.class)
 public class AnalysisReportScreenTest {
@@ -170,6 +173,104 @@ public class AnalysisReportScreenTest {
         }
 
         verify( view ).showIssue( issue );
+    }
+
+    @Test
+    public void testMergeConflictingRows1( ) {
+        Issue issue1 = new Issue( Severity.WARNING,
+                                  CheckType.CONFLICTING_ROWS,
+                                  new HashSet<>( Arrays.asList( 1, 2 ) ) );
+
+        Issue issue2 = new Issue( Severity.WARNING,
+                                  CheckType.CONFLICTING_ROWS,
+                                  new HashSet<>( Arrays.asList( 2, 3 ) ) );
+
+        screen.showReport( getAnalysis( issue1, issue2) );
+
+        assertEquals( 1, dataProvider.getList().size() );
+
+        Issue issue = (Issue) dataProvider.getList().get(0);
+
+        assertEquals( Severity.WARNING, issue.getSeverity() );
+        assertEquals( CheckType.CONFLICTING_ROWS, issue.getCheckType() );
+        assertThat(issue.getRowNumbers()).containsExactly(1,2,3);
+
+
+        verify( view ).showIssue( issue );
+    }
+
+    @Test
+    public void testMergeConflictingRows2( ) {
+        Issue issue1 = new Issue( Severity.WARNING,
+                                  CheckType.CONFLICTING_ROWS,
+                                  new HashSet<>( Arrays.asList( 1, 2 ) ) );
+
+        Issue issue2 = new Issue( Severity.WARNING,
+                                  CheckType.CONFLICTING_ROWS,
+                                  new HashSet<>( Arrays.asList( 3, 4 ) ) );
+
+        screen.showReport( getAnalysis( issue1, issue2) );
+
+        assertEquals( 2, dataProvider.getList().size() );
+
+        assertEquals( issue1, dataProvider.getList().get(0) );
+        assertEquals( issue2, dataProvider.getList().get(1) );
+    }
+
+    @Test
+    public void testMergeConflictingRows3( ) {
+        Issue issue1 = new Issue( Severity.WARNING,
+                                  CheckType.CONFLICTING_ROWS,
+                                  new HashSet<>( Arrays.asList( 1, 2 ) ) );
+
+        Issue issue2 = new Issue( Severity.WARNING,
+                                  CheckType.CONFLICTING_ROWS,
+                                  new HashSet<>( Arrays.asList( 5, 8 ) ) );
+
+        Issue issue3 = new Issue( Severity.WARNING,
+                                  CheckType.CONFLICTING_ROWS,
+                                  new HashSet<>( Arrays.asList( 3, 5 ) ) );
+
+        Issue issue4 = new Issue( Severity.WARNING,
+                                  CheckType.CONFLICTING_ROWS,
+                                  new HashSet<>( Arrays.asList( 2, 4 ) ) );
+
+        screen.showReport( getAnalysis( issue1, issue2, issue3, issue4) );
+
+        assertEquals( 2, dataProvider.getList().size() );
+
+        Issue newIssue1 = (Issue) dataProvider.getList().get(0);
+        Issue newIssue2 = (Issue) dataProvider.getList().get(1);
+        assertThat(newIssue1.getRowNumbers()).containsExactly(1,2,4);
+        assertThat(newIssue2.getRowNumbers()).containsExactly(3,5,8);
+    }
+
+    @Test
+    public void testMergeConflictingRows4( ) {
+        Issue issue1 = new Issue( Severity.WARNING,
+                                  CheckType.CONFLICTING_ROWS,
+                                  new HashSet<>( Arrays.asList( 1, 2 ) ) );
+
+        Issue issue2 = new Issue( Severity.WARNING,
+                                  CheckType.CONFLICTING_ROWS,
+                                  new HashSet<>( Arrays.asList( 1, 3 ) ) );
+
+        Issue issue3 = new Issue( Severity.WARNING,
+                                  CheckType.CONFLICTING_ROWS,
+                                  new HashSet<>( Arrays.asList( 1, 4 ) ) );
+
+        Issue issue4 = new Issue( Severity.WARNING,
+                                  CheckType.CONFLICTING_ROWS,
+                                  new HashSet<>( Arrays.asList( 5, 8 ) ) );
+
+        screen.showReport( getAnalysis( issue1, issue2, issue3, issue4) );
+
+        assertEquals( 2, dataProvider.getList().size() );
+
+        Issue newIssue1 = (Issue) dataProvider.getList().get(0);
+        Issue newIssue2 = (Issue) dataProvider.getList().get(1);
+        assertThat(newIssue1.getRowNumbers()).containsExactly(1,2,3,4);
+        assertThat(newIssue2.getRowNumbers()).containsExactly(5,8);
     }
 
     @Test

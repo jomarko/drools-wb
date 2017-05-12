@@ -16,8 +16,8 @@
 
 package org.drools.workbench.services.verifier.api.client.reporting;
 
-import java.util.HashSet;
 import java.util.Set;
+import java.util.TreeSet;
 
 import org.jboss.errai.common.client.api.annotations.MapsTo;
 import org.jboss.errai.common.client.api.annotations.Portable;
@@ -28,13 +28,13 @@ public class Issue {
     public static final Issue EMPTY = new Issue( );
 
     private final Severity severity;
-    private final Set<Integer> rowNumbers;
+    private final TreeSet<Integer> rowNumbers;
     private CheckType checkType;
     private String debugMessage;
 
     private Issue() {
         severity = null;
-        rowNumbers = new HashSet<>();
+        rowNumbers = new TreeSet<>();
     }
 
     public Issue( @MapsTo("severity") final Severity severity,
@@ -42,7 +42,7 @@ public class Issue {
                   @MapsTo("rowNumbers") final Set<Integer> rowNumbers ) {
         this.severity = severity;
         this.checkType = checkType;
-        this.rowNumbers = rowNumbers;
+        this.rowNumbers = new TreeSet<>(rowNumbers);
     }
 
     public Severity getSeverity() {
