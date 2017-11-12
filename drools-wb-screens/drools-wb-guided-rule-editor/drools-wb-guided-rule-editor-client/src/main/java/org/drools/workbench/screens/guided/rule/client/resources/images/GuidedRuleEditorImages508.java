@@ -45,12 +45,6 @@ public class GuidedRuleEditorImages508 {
         return image;
     }
 
-    public Image WarningSmall() {
-        Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().warning() );
-        image.setAltText( GuidedRuleEditorResources.CONSTANTS.Warning() );
-        return image;
-    }
-
     public Image Error() {
         Image image = new Image( GuidedRuleEditorResources.INSTANCE.images().error() );
         image.setAltText( GuidedRuleEditorResources.CONSTANTS.Error() );

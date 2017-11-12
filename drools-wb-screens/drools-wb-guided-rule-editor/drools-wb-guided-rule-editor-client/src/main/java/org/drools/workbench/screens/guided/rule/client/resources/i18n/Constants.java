@@ -304,8 +304,6 @@ public interface Constants
 
     String Wizard();
 
-    String Warning();
-
     String NewItem();
 
     String NewItemBelow();

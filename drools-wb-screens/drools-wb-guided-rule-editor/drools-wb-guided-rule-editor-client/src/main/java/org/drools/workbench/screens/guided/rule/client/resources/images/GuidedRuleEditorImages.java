@@ -46,9 +46,6 @@ public interface GuidedRuleEditorImages extends
     @ClientBundle.Source("add_connective.gif")
     ImageResource addConnective();
 
-    @ClientBundle.Source("warning.gif")
-    ImageResource warning();
-
     @ClientBundle.Source("new_wiz.gif")
     ImageResource newWiz();
 

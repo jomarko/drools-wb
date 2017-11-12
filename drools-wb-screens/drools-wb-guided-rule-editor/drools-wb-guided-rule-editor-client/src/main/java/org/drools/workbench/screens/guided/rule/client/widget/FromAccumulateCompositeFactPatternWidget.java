@@ -16,6 +16,7 @@
 
 package org.drools.workbench.screens.guided.rule.client.widget;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.dom.client.Style;
 import com.google.gwt.event.dom.client.ChangeEvent;
 import com.google.gwt.event.dom.client.ChangeHandler;
@@ -339,7 +340,7 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
      */
     @Override
     protected void showFactTypeSelector() {
-        final ListBox box = new ListBox();
+        final ListBox box = GWT.create(ListBox.class);
         AsyncPackageDataModelOracle oracle = this.getModeller().getDataModelOracle();
         String[] facts = oracle.getFactTypes();
 
@@ -350,7 +351,8 @@ public class FromAccumulateCompositeFactPatternWidget extends FromCompositeFactP
         }
         box.setSelectedIndex(0);
 
-        final FormStylePopup popup = new FormStylePopup(GuidedRuleEditorResources.CONSTANTS.NewFactPattern());
+        final FormStylePopup popup = GWT.create(FormStylePopup.class);
+        popup.setTitle(GuidedRuleEditorResources.CONSTANTS.NewFactPattern());
         popup.addAttribute(GuidedRuleEditorResources.CONSTANTS.chooseFactType(),
                            box);
         box.addChangeHandler(new ChangeHandler() {

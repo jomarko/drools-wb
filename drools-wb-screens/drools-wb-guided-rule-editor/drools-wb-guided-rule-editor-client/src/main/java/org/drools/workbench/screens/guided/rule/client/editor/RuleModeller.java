@@ -16,13 +16,12 @@
 
 package org.drools.workbench.screens.guided.rule.client.editor;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
+import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.ClickEvent;
 import com.google.gwt.event.dom.client.ClickHandler;
 import com.google.gwt.event.logical.shared.ValueChangeEvent;
@@ -79,17 +78,6 @@ public class RuleModeller extends Composite
     private boolean isReadOnly = false;
     private boolean isDSLEnabled = true;
 
-    private List<RuleModellerWidget> lhsWidgets = new ArrayList<RuleModellerWidget>();
-    private List<RuleModellerWidget> rhsWidgets = new ArrayList<RuleModellerWidget>();
-
-    private boolean hasModifiedWidgets;
-
-    private final Command onWidgetModifiedCommand = new Command() {
-
-        public void execute() {
-            hasModifiedWidgets = true;
-        }
-    };
     private final RuleSelector ruleSelector = new RuleSelector();
 
     //used by Guided Rule (DRL + DSLR)
@@ -150,7 +138,7 @@ public class RuleModeller extends Composite
     }
 
     protected void doLayout() {
-        layout = new FlexTable();
+        layout = GWT.create(FlexTable.class);
         initWidget();
         layout.setStyleName("model-builder-Background");
         initWidget(layout);
@@ -302,7 +290,7 @@ public class RuleModeller extends Composite
             return true;
         }
 
-        if (this.model.metadataList.length == 0) {
+        if (this.model == null || this.model.metadataList == null || this.model.metadataList.length == 0) {
             return false;
         }
 
@@ -390,8 +378,6 @@ public class RuleModeller extends Composite
                                                                 eventBus,
                                                                 action,
                                                                 readOnly);
-            w.addOnModifiedCommand(this.onWidgetModifiedCommand);
-
             widget.add(wrapRHSWidget(model,
                                      i,
                                      w));
@@ -463,8 +449,6 @@ public class RuleModeller extends Composite
                                                }
                 );
             }
-
-            this.rhsWidgets.add(w);
             currentLayoutRow++;
         }
     }
@@ -496,8 +480,8 @@ public class RuleModeller extends Composite
     private void renderLhs(final RuleModel model) {
 
         for (int i = 0; i < model.lhs.length; i++) {
-            DirtyableVerticalPane vert = new DirtyableVerticalPane();
-            vert.setWidth("100%");
+            final DirtyableVerticalPane verticalPanel = GWT.create(DirtyableVerticalPane.class);
+            verticalPanel.setWidth("100%");
 
             //if lockLHS() set the widget RO, otherwise let them decide.
             Boolean readOnly = this.lockLHS() ? true : null;
@@ -508,12 +492,10 @@ public class RuleModeller extends Composite
                                                                            eventBus,
                                                                            pattern,
                                                                            readOnly);
-            widget.addOnModifiedCommand(this.onWidgetModifiedCommand);
-
-            vert.add(wrapLHSWidget(model,
-                                   i,
-                                   widget));
-            vert.add(spacerWidget());
+            verticalPanel.add(wrapLHSWidget(model,
+                                            i,
+                                            widget));
+            verticalPanel.add(spacerWidget());
 
             layout.setWidget(currentLayoutRow,
                              0,
@@ -535,7 +517,7 @@ public class RuleModeller extends Composite
 
             layout.setWidget(currentLayoutRow,
                              3,
-                             vert);
+                             verticalPanel);
             layout.getFlexCellFormatter().setHorizontalAlignment(currentLayoutRow,
                                                                  3,
                                                                  HasHorizontalAlignment.ALIGN_LEFT);
@@ -580,8 +562,6 @@ public class RuleModeller extends Composite
                                                }
                 );
             }
-
-            this.lhsWidgets.add(widget);
             currentLayoutRow++;
         }
     }
@@ -633,7 +613,7 @@ public class RuleModeller extends Composite
     private Widget wrapLHSWidget(final RuleModel model,
                                  int i,
                                  RuleModellerWidget w) {
-        final FlexTable wrapper = new FlexTable();
+        final FlexTable wrapper = GWT.create(FlexTable.class);
         final Image remove = GuidedRuleEditorImages508.INSTANCE.DeleteItemSmall();
         remove.setTitle(GuidedRuleEditorResources.CONSTANTS.RemoveThisENTIREConditionAndAllTheFieldConstraintsThatBelongToIt());
         final int idx = i;
