@@ -58,6 +58,10 @@
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
+      <artifactId>uberfire-security-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.uberfire</groupId>
       <artifactId>uberfire-structure-client</artifactId>
     </dependency>
     <dependency>
@@ -99,6 +103,10 @@
     <dependency>
       <groupId>org.kie.workbench.services</groupId>
       <artifactId>kie-wb-common-services-api</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>org.kie.workbench.services</groupId>
+      <artifactId>kie-wb-common-refactoring-api</artifactId>
     </dependency>
     <dependency>
       <groupId>org.uberfire</groupId>
