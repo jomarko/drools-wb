@@ -26,6 +26,7 @@ import org.drools.workbench.models.testscenarios.shared.Fixture;
 import org.drools.workbench.models.testscenarios.shared.FixtureList;
 import org.drools.workbench.models.testscenarios.shared.Scenario;
 import org.drools.workbench.models.testscenarios.shared.VerifyFact;
+import org.drools.workbench.models.testscenarios.shared.VerifyScorecardScore;
 import org.drools.workbench.screens.testscenario.client.resources.i18n.TestScenarioConstants;
 import org.gwtbootstrap3.client.ui.Button;
 import org.gwtbootstrap3.client.ui.constants.IconType;
@@ -61,27 +62,46 @@ public class VerifyFactsPanel extends VerticalPanel {
                 column.add( new DeleteButton( verifyFact ) );
 
                 add( column );
+            } else if (fixture instanceof VerifyScorecardScore) {
+                VerifyScorecardScore verifyScorecardScore = (VerifyScorecardScore) fixture;
+
+                HorizontalPanel column = new HorizontalPanel();
+                column.add(new VerifyScorecardScoreWidget(verifyScorecardScore,
+                                                          showResults));
+
+                column.add(new DeleteButton(verifyScorecardScore));
+
+                add(column);
             }
         }
     }
 
     class DeleteButton extends Button {
 
-        public DeleteButton( final VerifyFact verifyFact ) {
+        public DeleteButton( final Fixture fixture ) {
             setIcon(IconType.TRASH);
-            setText("'" + verifyFact.getName() + "'");
+            setText("'" + getName(fixture) + "'");
             setTitle(TestScenarioConstants.INSTANCE.DeleteTheExpectationForThisFact());
 
             addClickHandler( new ClickHandler() {
 
                 public void onClick( ClickEvent event ) {
                     if ( Window.confirm( TestScenarioConstants.INSTANCE.AreYouSureYouWantToRemoveThisExpectation() ) ) {
-                        scenario.removeFixture( verifyFact );
+                        scenario.removeFixture( fixture );
                         parent.renderEditor();
                     }
                 }
             } );
         }
-    }
 
+        private Object getName(Fixture fixture) {
+            if (fixture instanceof VerifyFact) {
+                return ((VerifyFact) fixture).getName();
+            } else if (fixture instanceof VerifyScorecardScore) {
+                return TestScenarioConstants.INSTANCE.ScoreCardScore();
+            } else {
+                return "";
+            }
+        }
+    }
 }

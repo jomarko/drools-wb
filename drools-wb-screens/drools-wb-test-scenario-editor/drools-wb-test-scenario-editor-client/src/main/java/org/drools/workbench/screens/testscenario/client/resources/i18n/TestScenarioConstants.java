@@ -292,4 +292,6 @@ public interface
     String DeleteScenarioBlockAbove();
 
     String SelectScoreCard();
+
+    String ScoreCardScore();
 }
