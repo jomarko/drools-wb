@@ -131,7 +131,15 @@ public class GuidedDecisionTableViewImpl extends BaseGridWidget implements Guide
 
     private double getHeaderCaptionWidth() {
         return Math.max(HEADER_CAPTION_WIDTH,
-                        model.getRowNumberCol().getWidth() + model.getDescriptionCol().getWidth());
+                        getHeaderCaptionWidthSum());
+    }
+
+    private int getHeaderCaptionWidthSum() {
+        if (model.getRuleNameColumn().isHideColumn()) {
+            return model.getRowNumberCol().getWidth() + model.getDescriptionCol().getWidth();
+        } else {
+            return model.getRowNumberCol().getWidth() + model.getRuleNameColumn().getWidth() + model.getDescriptionCol().getWidth();
+        }
     }
 
     @Override

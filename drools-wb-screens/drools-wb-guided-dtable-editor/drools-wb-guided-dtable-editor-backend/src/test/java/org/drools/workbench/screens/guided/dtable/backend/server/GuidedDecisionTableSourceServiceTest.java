@@ -266,6 +266,7 @@ public class GuidedDecisionTableSourceServiceTest {
                         boolean isOtherwise) {
         data.add(new ArrayList<DTCellValue52>() {{
             add(new DTCellValue52(rowNumber));
+            add(new DTCellValue52(""));
             add(new DTCellValue52("row " + rowNumber));
             if (!isOtherwise) {
                 add(new DTCellValue52(nameEqualToCostraint));
@@ -281,6 +282,7 @@ public class GuidedDecisionTableSourceServiceTest {
                         String... constraintValues) {
         data.add(new ArrayList<DTCellValue52>() {{
             add(new DTCellValue52(rowNumber));
+            add(new DTCellValue52(""));
             add(new DTCellValue52("row " + rowNumber));
             Stream.of(constraintValues).forEach(value -> add(new DTCellValue52(value)));
         }});

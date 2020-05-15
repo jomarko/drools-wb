@@ -1,5 +1,5 @@
 /*
- * Copyright 2012 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,38 +22,37 @@ import org.drools.decisiontable.parser.ActionType.Code;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 
-/**
- * Builder for RowNumber columns
- */
-public class RowNumberBuilder
+public class RuleNameBuilder
         implements
         GuidedDecisionTableSourceBuilderDirect {
 
-    private List<DTCellValue52> values = new ArrayList<DTCellValue52>();
+    private List<DTCellValue52> values = new ArrayList<>();
+
+    @Override
+    public Code getActionTypeCode() {
+        return Code.NAME;
+    }
 
     @Override
     public void populateDecisionTable( final GuidedDecisionTable52 dtable,
                                        final int maxRowCount ) {
         if ( this.values.size() < maxRowCount ) {
             for ( int iRow = this.values.size(); iRow < maxRowCount; iRow++ ) {
-                this.values.add( new DTCellValue52( 0 ) );
+                this.values.add( new DTCellValue52( "" ) );
             }
         }
 
         for ( int iRow = 0; iRow < this.values.size(); iRow++ ) {
-            dtable.getData().add( new ArrayList<DTCellValue52>() );
-            final DTCellValue52 dcv = this.values.get( iRow );
-            dcv.setNumericValue( Integer.valueOf( iRow + 1 ) );
-            dtable.getData().get( iRow ).add( GuidedDecisionTable52.RULE_NUMBER_INDEX,
-                                              dcv );
+            dtable.getData().get( iRow ).add( GuidedDecisionTable52.RULE_NAME_COLUMN_INDEX,
+                                              this.values.get( iRow ) );
         }
     }
 
     @Override
     public void addCellValue( final int row,
-                              final int col,
+                              final int column,
                               final String value ) {
-        this.values.add( new DTCellValue52( 0 ) );
+        this.values.add( new DTCellValue52( "" ) );
     }
 
     @Override
@@ -63,24 +62,19 @@ public class RowNumberBuilder
 
     @Override
     public boolean hasValues() {
-        return this.values.size() > 0;
-    }
-
-    @Override
-    public Code getActionTypeCode() {
-        throw new UnsupportedOperationException( "RowNumberBuilder does implement an ActionType.Code" );
+        return !this.values.isEmpty();
     }
 
     @Override
     public String getResult() {
-        throw new UnsupportedOperationException( "RowNumberBuilder does not return DRL." );
+        throw new UnsupportedOperationException( "RuleNameBuilder does not return DRL." );
     }
 
     @Override
     public void addTemplate( final int row,
                              final int col,
                              final String content ) {
-        throw new UnsupportedOperationException( "RowNumberBuilder does implement code snippets." );
+        throw new UnsupportedOperationException( "RuleNameBuilder does implement code snippets." );
     }
 
     @Override
@@ -90,7 +84,6 @@ public class RowNumberBuilder
 
     @Override
     public int getColumn() {
-        return 0;
+        return 1;
     }
-
 }

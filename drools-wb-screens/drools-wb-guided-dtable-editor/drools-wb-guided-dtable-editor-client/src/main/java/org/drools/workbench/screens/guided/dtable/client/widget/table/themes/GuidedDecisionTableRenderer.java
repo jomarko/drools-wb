@@ -111,7 +111,15 @@ public class GuidedDecisionTableRenderer extends BaseGridRenderer {
 
     private double getHeaderCaptionWidth() {
         return Math.max(GuidedDecisionTableViewImpl.HEADER_CAPTION_WIDTH,
-                        model.getRowNumberCol().getWidth() + model.getDescriptionCol().getWidth());
+                        sumMainColumns());
+    }
+
+    private int sumMainColumns() {
+        if(model.getRuleNameColumn().isHideColumn()){
+            return model.getRowNumberCol().getWidth() + model.getDescriptionCol().getWidth();
+        }else {
+            return model.getRowNumberCol().getWidth() + model.getRuleNameColumn().getWidth() + model.getDescriptionCol().getWidth();
+        }
     }
 
     private Bounds getSelectorBounds(final double width,

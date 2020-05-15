@@ -367,4 +367,6 @@ public interface GuidedDecisionTableConstants
     String TableConvertedSuccessfully();
 
     String Convert();
+
+    String RuleName();
 }
