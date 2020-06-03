@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.client.editor.page;
 import com.google.gwt.dom.client.Document;
 import com.google.gwt.dom.client.InputElement;
 import com.google.gwt.event.dom.client.ChangeEvent;
+import org.drools.workbench.screens.guided.dtable.client.resources.i18n.GuidedDecisionTableConstants;
 import org.jboss.errai.ui.client.local.api.elemental2.IsElement;
 import org.jboss.errai.ui.shared.api.annotations.DataField;
 import org.jboss.errai.ui.shared.api.annotations.EventHandler;
@@ -50,5 +51,6 @@ public class ShowRuleNameOptionView
     @Override
     public void init(ShowRuleNameOptionPresenter presenter) {
         this.presenter = presenter;
+        ruleNameCheckBox.setTitle(GuidedDecisionTableConstants.INSTANCE.ShowRuleNameColumnTooltip());
     }
 }

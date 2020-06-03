@@ -371,4 +371,6 @@ public interface GuidedDecisionTableConstants
     String Convert();
 
     String RuleName();
+
+    String ShowRuleNameColumnTooltip();
 }
