@@ -19,12 +19,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang3.StringUtils;
 import org.drools.workbench.models.datamodel.rule.ActionInsertFact;
 import org.drools.workbench.models.datamodel.rule.FactPattern;
+import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.datamodel.rule.IPattern;
 import org.drools.workbench.models.guided.dtable.backend.GuidedDTDRLPersistence;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
@@ -33,8 +34,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.BRLVariableColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.ColumnContext;
-
-import static org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.Util.hasContent;
 
 /**
  * Makes a single column out of the BRL column(s)
@@ -56,22 +55,64 @@ public class BRLColumnSubHeaderBuilderDefault
     }
 
     @Override
-    public void brlActions(final BRLActionColumn brlColumn) {
+    public void buildBrlActions(final BRLActionColumn brlColumn) {
 
+        subHeaderBuilder.addHeaderAndTitle(SubHeaderBuilder.ACTION,
+                                           brlColumn.getHeader());
+        subHeaderBuilder.getFieldRow().createCell(subHeaderBuilder.getTargetColumnIndex()).setCellValue(replaceTempVars(brlColumn.getChildColumns(),
+                                                                                                                        makeRHSDrl(brlColumn)));
+    }
+
+    @Override
+    public void buildBrlConditions(final BRLConditionColumn brlColumn) {
+
+        for (IPattern iPattern : brlColumn.getDefinition()) {
+            if (iPattern instanceof FactPattern) {
+                columnContext.addBoundName(((FactPattern) iPattern).getBoundName());
+            }
+        }
+
+        subHeaderBuilder.addHeaderAndTitle(SubHeaderBuilder.CONDITION,
+                                           brlColumn.getHeader());
+        subHeaderBuilder.getFieldRow().createCell(subHeaderBuilder.getTargetColumnIndex()).setCellValue(replaceTempVars(brlColumn.getChildColumns(),
+                                                                                                                        makeLHSDrl(brlColumn)));
+    }
+
+    private String makeRHSDrl(final BRLActionColumn brlColumn) {
+        return subString(GuidedDTDRLPersistence.getInstance().marshal(makeTempFullGuidedDecisionTable(brlColumn)), "then", "end");
+    }
+
+    private void updateBoundNames(final BRLActionColumn brlColumn) {
+        for (final IAction iAction : brlColumn.getDefinition()) {
+            if (iAction instanceof ActionInsertFact) {
+                ActionInsertFact insertFact = (ActionInsertFact) iAction;
+                if (insertFact.getBoundName() == null) {
+                    insertFact.setBoundName(getBoundName(insertFact));
+                }
+            }
+        }
+    }
+
+    private String getBoundName(final ActionInsertFact insertFact) {
+        if (StringUtils.isNotEmpty(insertFact.getBoundName())) {
+            return insertFact.getBoundName();
+        } else {
+            return columnContext.getNextFreeColumnFactName();
+        }
+    }
+
+    private String makeLHSDrl(final BRLConditionColumn brlColumn) {
+        return subString(GuidedDTDRLPersistence.getInstance().marshal(makeTempLHSGuidedDecisionTable(brlColumn)), "when", "then");
+    }
+
+    private GuidedDecisionTable52 makeTempFullGuidedDecisionTable(final BRLActionColumn brlColumn) {
         final GuidedDecisionTable52 dt = new GuidedDecisionTable52();
         dt.getAttributeCols().addAll(dtable.getAttributeCols());
         dt.getMetadataCols().addAll(dtable.getMetadataCols());
         dt.getConditions().addAll(dtable.getConditions());
         final ArrayList<DTCellValue52> list = new ArrayList<>();
 
-        for (Object o : brlColumn.getDefinition()) {
-            if (o instanceof ActionInsertFact) {
-                ActionInsertFact insertFact = (ActionInsertFact) o;
-                if (insertFact.getBoundName() == null) {
-                    insertFact.setBoundName(getBoundName(insertFact));
-                }
-            }
-        }
+        updateBoundNames(brlColumn);
 
         for (int i = 0; i < dt.getExpandedColumns().size(); i++) {
             list.add(dtable.getData().get(0).get(i));
@@ -81,43 +122,19 @@ public class BRLColumnSubHeaderBuilderDefault
         dt.getData().add(list);
 
         dt.getActionCols().add(brlColumn);
-
-        subHeaderBuilder.addHeaderAndTitle(SubHeaderBuilder.ACTION,
-                                           brlColumn.getHeader());
-        subHeaderBuilder.getFieldRow().createCell(subHeaderBuilder.getTargetColumnIndex()).setCellValue(replaceTempVars(brlColumn.getChildColumns(),
-                                                                                                                        subString(GuidedDTDRLPersistence.getInstance().marshal(dt), "then", "end")));
+        return dt;
     }
 
-    private String getBoundName(final ActionInsertFact insertFact) {
-        if (hasContent(insertFact.getBoundName())) {
-            return insertFact.getBoundName();
-        } else {
-            return columnContext.getNextFreeColumnFactName();
-        }
-    }
-
-    @Override
-    public void brlConditions(final BRLConditionColumn brlColumn) {
-
-        for (IPattern iPattern : brlColumn.getDefinition()) {
-            if (iPattern instanceof FactPattern) {
-                columnContext.addBoundName(((FactPattern) iPattern).getBoundName());
-            }
-        }
-
+    private GuidedDecisionTable52 makeTempLHSGuidedDecisionTable(final BRLConditionColumn brlColumn) {
         final GuidedDecisionTable52 dt = new GuidedDecisionTable52();
         dt.getConditions().add(brlColumn);
         final ArrayList<DTCellValue52> list = new ArrayList<>();
-        list.add(new DTCellValue52(1));
-        list.add(new DTCellValue52(""));
+        list.add(new DTCellValue52(1)); // Row number
+        list.add(new DTCellValue52("")); // Description
 
         list.addAll(setUpVarNamesWithTemps(brlColumn.getChildColumns()));
         dt.getData().add(list);
-
-        subHeaderBuilder.addHeaderAndTitle(SubHeaderBuilder.CONDITION,
-                                           brlColumn.getHeader());
-        subHeaderBuilder.getFieldRow().createCell(subHeaderBuilder.getTargetColumnIndex()).setCellValue(replaceTempVars(brlColumn.getChildColumns(),
-                                                                                                                        subString(GuidedDTDRLPersistence.getInstance().marshal(dt), "when", "then")));
+        return dt;
     }
 
     private List<DTCellValue52> setUpVarNamesWithTemps(final List<? extends BRLVariableColumn> childColumns) {
@@ -147,9 +164,9 @@ public class BRLColumnSubHeaderBuilderDefault
     }
 
     private String replaceTempVars(final List<? extends BRLVariableColumn> childColumns,
-                                   final String marshal) {
+                                   final String drl) {
         int varIndex = 1;
-        String result = marshal;
+        String result = drl;
         for (BRLVariableColumn childColumn : childColumns) {
 
             final String var = varListInOrder.get(childColumn.getVarName());
@@ -165,8 +182,8 @@ public class BRLColumnSubHeaderBuilderDefault
                              final String from,
                              final String to) {
 
-        Pattern regex = Pattern.compile("\\s*" + from + "\\s*(.*)" + to, Pattern.DOTALL);
-        Matcher regexMatcher = regex.matcher(marshal);
+        final Pattern regex = Pattern.compile("\\s*" + from + "\\s*(.*)" + to, Pattern.DOTALL);
+        final Matcher regexMatcher = regex.matcher(marshal);
         if (regexMatcher.find()) {
             return regexMatcher.group(1);
         } else {

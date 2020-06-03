@@ -83,7 +83,7 @@ public class DataBuilder {
         }
     }
 
-    class DataRowBuilder {
+    public class DataRowBuilder {
 
         private final Row xlsRow = sheet.createRow(rowCount);
         private final Set<String> addedInserts = new HashSet<>();
@@ -100,7 +100,7 @@ public class DataBuilder {
             return targetColumnIndex;
         }
 
-        public void upTargetColumnIndex() {
+        public void moveToNextTargetColumnIndex() {
             ++targetColumnIndex;
         }
 
@@ -108,7 +108,7 @@ public class DataBuilder {
             return sourceColumnIndex;
         }
 
-        public void upSourceColumnIndex() {
+        public void moveSourceColumnIndexForward() {
             sourceColumnIndex++;
         }
 
@@ -298,12 +298,10 @@ public class DataBuilder {
                 if (cell.getStringValue() != null && !cell.getStringValue().isEmpty()) {
                     if (isOperator("in")) {
                         return String.format("(%s)", fixStringValue(cell));
+                    } else if (addQuotes) {
+                        return String.format("\"%s\"", fixStringValue(cell));
                     } else {
-                        if (addQuotes) {
-                            return String.format("\"%s\"", fixStringValue(cell));
-                        } else {
-                            return cell.getStringValue();
-                        }
+                        return cell.getStringValue();
                     }
                 }
             } else {

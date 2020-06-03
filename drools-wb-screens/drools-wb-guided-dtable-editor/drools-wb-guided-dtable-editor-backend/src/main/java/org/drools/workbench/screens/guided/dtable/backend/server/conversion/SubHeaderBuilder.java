@@ -132,11 +132,11 @@ public class SubHeaderBuilder {
             } else {
                 throw new IllegalArgumentException("TODO REMOTE THIS");
             }
-            upTargetIndex();
+            incrementTargetIndex();
         }
     }
 
-    public void upTargetIndex() {
+    public void incrementTargetIndex() {
         targetColumnIndex++;
     }
 
@@ -245,7 +245,7 @@ public class SubHeaderBuilder {
                                                                                      factType));
 
             columnContext.addBoundName(boundName);
-            upTargetIndex();
+            incrementTargetIndex();
         }
 
         addHeaderAndTitle(ACTION,

@@ -20,8 +20,8 @@ import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn
 
 public interface BRLColumnSubHeaderBuilder {
 
-    void brlActions(BRLActionColumn brlColumn);
+    void buildBrlActions(BRLActionColumn brlColumn);
 
-    void brlConditions(BRLConditionColumn brlColumn);
+    void buildBrlConditions(BRLConditionColumn brlColumn);
 
 }

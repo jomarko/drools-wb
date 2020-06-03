@@ -62,7 +62,6 @@ public class XLSBuilder {
             return new BuildResult(workbook,
                                    new XLSConversionResult(e.getMessage()));
         } catch (final Exception e) {
-            e.printStackTrace(); // TODO remove
             return new BuildResult(workbook,
                                    new XLSConversionResult(e.toString() + " : " + e.getMessage()));
         }
@@ -72,7 +71,7 @@ public class XLSBuilder {
 
     private void checkHitPolicy() {
         if (dtable.getHitPolicy() != GuidedDecisionTable52.HitPolicy.NONE) {
-            throw new UnsupportedOperationException("Migrating Hit Policies is supported.");
+            throw new UnsupportedOperationException("Migrating Hit Policies is not supported.");
         }
     }
 
