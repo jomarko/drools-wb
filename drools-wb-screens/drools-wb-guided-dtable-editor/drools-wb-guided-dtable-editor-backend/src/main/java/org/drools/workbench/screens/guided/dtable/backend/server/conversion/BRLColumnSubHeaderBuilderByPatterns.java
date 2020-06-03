@@ -19,6 +19,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
 import org.drools.workbench.models.datamodel.rule.ActionSetField;
 import org.drools.workbench.models.datamodel.rule.IAction;
 import org.drools.workbench.models.guided.dtable.shared.model.ActionCol52;
@@ -30,8 +31,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.ConditionCol52;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
 import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.ColumnContext;
 import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.FromTo;
-
-import static org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.Util.hasContent;
 
 /**
  * Splits the BRL column so that each value has a column.
@@ -53,7 +52,7 @@ public class BRLColumnSubHeaderBuilderByPatterns
     }
 
     @Override
-    public void brlActions(final BRLActionColumn brlColumn) {
+    public void buildBrlActions(final BRLActionColumn brlColumn) {
 
         for (final IAction iAction : brlColumn.getDefinition()) {
             final Iterator<String> variablesIterator = columnContext.getVariablesInOrderOfUse(iAction).iterator();
@@ -64,30 +63,46 @@ public class BRLColumnSubHeaderBuilderByPatterns
                 final ActionCol52 childColumn = getChildActionColumn(variablesIterator.next(),
                                                                      brlColumn.getChildColumns());
                 if (childColumn instanceof BRLActionVariableColumn) {
-
-                    final boolean madeInsert = subHeaderBuilder.addInsert(brlColumn.getHeader(),
-                                                                          boundName,
-                                                                          ((BRLActionVariableColumn) childColumn).getFactType(),
-                                                                          ((BRLActionVariableColumn) childColumn).getFactField());
-                    if (madeInsert) {
-                        subHeaderBuilder.getColumnContext().put(brlColumn,
-                                                                FromTo.makePlaceHolder(dtable.getExpandedColumns().indexOf(childColumn),
-                                                                                       subHeaderBuilder.getTargetColumnIndex() - 1));
-                    }
+                    addBRLActionVariableColumn(brlColumn,
+                                               boundName,
+                                               (BRLActionVariableColumn) childColumn);
                 }
 
-                subHeaderBuilder.getColumnContext().put(brlColumn,
-                                                        FromTo.makeFromTo(dtable.getExpandedColumns().indexOf(childColumn),
-                                                                          subHeaderBuilder.getTargetColumnIndex()));
+                updateColumnContext(brlColumn,
+                                    childColumn);
+
                 if (variablesIterator.hasNext()) {
-                    subHeaderBuilder.upTargetIndex();
+                    subHeaderBuilder.incrementTargetIndex();
                 }
             }
         }
     }
 
+    public void addBRLActionVariableColumn(final BRLActionColumn brlColumn,
+                                           final String boundName,
+                                           final BRLActionVariableColumn childColumn) {
+        final boolean madeInsert = subHeaderBuilder.addInsert(brlColumn.getHeader(),
+                                                              boundName,
+                                                              childColumn.getFactType(),
+                                                              childColumn.getFactField());
+        if (madeInsert) {
+            addInsertColumn(brlColumn,
+                            childColumn);
+        }
+    }
+
+    /**
+     * Adds a column that creates a new fact and inserts it.
+     */
+    public void addInsertColumn(final BRLActionColumn brlColumn,
+                                final BRLActionVariableColumn childColumn) {
+        subHeaderBuilder.getColumnContext().put(brlColumn,
+                                                FromTo.makePlaceHolder(dtable.getExpandedColumns().indexOf(childColumn),
+                                                                       subHeaderBuilder.getTargetColumnIndex() - 1));
+    }
+
     private String getBoundName(final IAction iAction) {
-        if (iAction instanceof ActionSetField && hasContent(((ActionSetField) iAction).getVariable())) {
+        if (iAction instanceof ActionSetField && StringUtils.isNotEmpty(((ActionSetField) iAction).getVariable())) {
             return ((ActionSetField) iAction).getVariable();
         } else {
             return columnContext.getNextFreeColumnFactName();
@@ -95,17 +110,17 @@ public class BRLColumnSubHeaderBuilderByPatterns
     }
 
     @Override
-    public void brlConditions(final BRLConditionColumn brlColumn) {
+    public void buildBrlConditions(final BRLConditionColumn brlColumn) {
         final Iterator<String> variablesIterator = columnContext.getVariablesInOrderOfUse(brlColumn).iterator();
         while (variablesIterator.hasNext()) {
             final ConditionCol52 childColumn = getChildConditionColumn(variablesIterator.next(),
                                                                        brlColumn.getChildColumns());
             subHeaderBuilder.addCondition(childColumn);
-            subHeaderBuilder.getColumnContext().put(brlColumn,
-                                                    FromTo.makeFromTo(dtable.getExpandedColumns().indexOf(childColumn),
-                                                                      dtable.getExpandedColumns().indexOf(childColumn)));
+            updateColumnContext(brlColumn,
+                                childColumn);
+
             if (variablesIterator.hasNext()) {
-                subHeaderBuilder.upTargetIndex();
+                subHeaderBuilder.incrementTargetIndex();
             }
         }
     }
@@ -130,5 +145,18 @@ public class BRLColumnSubHeaderBuilderByPatterns
         }
 
         throw new IllegalArgumentException("Found a variable for a column that does not exist");
+    }
+
+    public void updateColumnContext(final BRLConditionColumn brlColumn, final ConditionCol52 childColumn) {
+        subHeaderBuilder.getColumnContext().put(brlColumn,
+                                                FromTo.makeFromTo(dtable.getExpandedColumns().indexOf(childColumn),
+                                                                  dtable.getExpandedColumns().indexOf(childColumn)));
+    }
+
+    public void updateColumnContext(final BRLActionColumn brlColumn,
+                                    final ActionCol52 childColumn) {
+        subHeaderBuilder.getColumnContext().put(brlColumn,
+                                                FromTo.makeFromTo(dtable.getExpandedColumns().indexOf(childColumn),
+                                                                  subHeaderBuilder.getTargetColumnIndex()));
     }
 }

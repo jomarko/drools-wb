@@ -18,6 +18,7 @@ package org.drools.workbench.screens.guided.dtable.backend.server.conversion;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.poi.ss.usermodel.Row;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
@@ -26,8 +27,6 @@ import org.drools.workbench.models.guided.dtable.shared.model.CompositeColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
 import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.ColumnContext;
 import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.FromTo;
-
-import static org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.Util.hasContent;
 
 public class BRLColumnDataBuilderByPatterns
         implements BRLColumnDataBuilder {
@@ -45,72 +44,60 @@ public class BRLColumnDataBuilderByPatterns
     public void build(final BRLConditionColumn baseColumn,
                       final List<DTCellValue52> row,
                       final Row xlsRow) {
-        setCellValues(row, xlsRow, columnContext.getCols(baseColumn));
-        upSourceColumnIndex(baseColumn);
+        addColumnValuesToRow(row, xlsRow, columnContext.getCols(baseColumn));
+        advanceSourceColumnIndex(baseColumn);
     }
 
     @Override
     public void build(final BRLActionColumn baseColumn,
                       final List<DTCellValue52> row,
                       final Row xlsRow) {
-        setCellValues(row, xlsRow, columnContext.getCols(baseColumn));
-        upSourceColumnIndex(baseColumn);
+        addColumnValuesToRow(row, xlsRow, columnContext.getCols(baseColumn));
+        advanceSourceColumnIndex(baseColumn);
     }
 
-    private void setCellValues(final List<DTCellValue52> row,
-                               final Row xlsRow,
-                               final List<FromTo> cols) {
-        final Iterator<FromTo> iterator = cols.iterator();
+    private void addColumnValuesToRow(final List<DTCellValue52> row,
+                                      final Row xlsRow,
+                                      final List<FromTo> columns) {
+        final Iterator<FromTo> iterator = columns.iterator();
         while (iterator.hasNext()) {
             final FromTo fromTo = iterator.next();
 
-            if (fromTo.isUseATickAsValue()) {
-                if (containsValues(cols, row)) {
-                    xlsRow.createCell(fromTo.getToColumnIndex())
-                            .setCellValue("X");
-                }
+            if (fromTo.shouldUseATickAsValue() && containsValues(columns, row)) {
+                xlsRow.createCell(fromTo.getToColumnIndex())
+                        .setCellValue("X");
             } else {
 
-                setCellValue(row, xlsRow, fromTo);
+                final String value = dataRowBuilder.getValue(row,
+                                                             fromTo.getFromColumnIndex(),
+                                                             true);
+                if (StringUtils.isNotEmpty(value)) {
+                    xlsRow.createCell(dataRowBuilder.getTargetColumnIndex())
+                            .setCellValue(value);
+                }
             }
             if (iterator.hasNext()) {
-                dataRowBuilder.upTargetColumnIndex();
+                dataRowBuilder.moveToNextTargetColumnIndex();
             }
-        }
-    }
-
-    private void setCellValue(final List<DTCellValue52> row,
-                              final Row xlsRow,
-                              final FromTo fromTo) {
-        final int sourceColumnIndex = fromTo.getFromColumnIndex();
-
-        final String value = dataRowBuilder.getValue(row, sourceColumnIndex);
-
-        if (hasContent(value)) {
-            xlsRow.createCell(dataRowBuilder.getTargetColumnIndex())
-                    .setCellValue(value);
         }
     }
 
     private boolean containsValues(final List<FromTo> cols,
                                    final List<DTCellValue52> row) {
         for (final FromTo fromTo : cols) {
-            if (!fromTo.isUseATickAsValue()) {
-
-                if (hasContent(dataRowBuilder.getValue(row, fromTo.getToColumnIndex()))) {
-                    return true;
-                }
+            if (!fromTo.shouldUseATickAsValue() && StringUtils.isNotEmpty(dataRowBuilder.getValue(row, fromTo.getToColumnIndex()))) {
+                return true;
             }
         }
         return false;
     }
 
-    private void upSourceColumnIndex(final CompositeColumn baseColumn) {
+    private void advanceSourceColumnIndex(final CompositeColumn baseColumn) {
         final Iterator<BRLConditionVariableColumn> iterator = baseColumn.getChildColumns().iterator();
         while (iterator.hasNext()) {
             iterator.next();
             if (iterator.hasNext()) {
-                dataRowBuilder.upSourceColumnIndex();
+                dataRowBuilder.moveSourceColumnIndexForward();
             }
         }
     }

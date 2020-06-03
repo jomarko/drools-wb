@@ -21,6 +21,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang3.StringUtils;
 import org.drools.workbench.models.datamodel.rule.ActionFieldList;
 import org.drools.workbench.models.datamodel.rule.ActionFieldValue;
 import org.drools.workbench.models.datamodel.rule.BaseSingleFieldConstraint;
@@ -33,8 +34,6 @@ import org.drools.workbench.models.datamodel.rule.SingleFieldConstraint;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
-
-import static org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.Util.hasContent;
 
 public class ColumnContext {
 
@@ -119,7 +118,7 @@ public class ColumnContext {
     }
 
     public void addBoundName(final String boundName) {
-        if (hasContent(boundName)) {
+        if (StringUtils.isNotEmpty(boundName)) {
             addedInserts.add(boundName);
         }
     }

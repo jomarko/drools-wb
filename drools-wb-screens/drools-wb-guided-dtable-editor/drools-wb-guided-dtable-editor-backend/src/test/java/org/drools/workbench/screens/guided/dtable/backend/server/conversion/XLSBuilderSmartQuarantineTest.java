@@ -1,5 +1,5 @@
 /*
- * Copyright 2019 Red Hat, Inc. and/or its affiliates.
+ * Copyright 2020 Red Hat, Inc. and/or its affiliates.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,7 +24,7 @@ import org.junit.Test;
 import static org.drools.workbench.screens.guided.dtable.backend.server.util.TestUtil.loadResource;
 import static org.junit.Assert.assertEquals;
 
-public class SmartQuarantineTest
+public class XLSBuilderSmartQuarantineTest
         extends TestBase {
 
     @BeforeClass
@@ -92,6 +92,5 @@ public class SmartQuarantineTest
         assertEquals("true", cell(9, 4).getStringCellValue());
         assertEquals("X", cell(9, 5).getStringCellValue());
         assertNullCell(9, 6);
-
     }
 }

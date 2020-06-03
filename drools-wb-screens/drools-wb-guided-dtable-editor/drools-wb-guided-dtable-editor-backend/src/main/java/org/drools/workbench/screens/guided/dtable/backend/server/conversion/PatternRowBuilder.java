@@ -36,7 +36,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.RuleNameColumn;
 import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.ColumnContext;
 import org.kie.soup.commons.validation.PortablePreconditions;
 
-import static org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.Util.canSplit;
+import static org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.BRLColumnUtil.canThisColumnBeSplitToMultiple;
 
 public class PatternRowBuilder {
 
@@ -100,7 +100,7 @@ public class PatternRowBuilder {
     public void addBRLConditionVariableColumn(final BRLConditionVariableColumn baseColumn) {
         final BRLConditionColumn brlColumn = dtable.getBRLColumn(baseColumn);
 
-        if (canSplit(brlColumn)) {
+        if (canThisColumnBeSplitToMultiple(brlColumn)) {
             final Iterator<IPattern> patternIterator = brlColumn.getDefinition().iterator();
             while (patternIterator.hasNext()) {
                 final IPattern iPattern = patternIterator.next();
