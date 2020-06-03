@@ -55,7 +55,7 @@ public class FromTo {
         return toColumnIndex;
     }
 
-    public boolean isUseATickAsValue() {
+    public boolean shouldUseATickAsValue() {
         return useATickAsAValue;
     }
 }

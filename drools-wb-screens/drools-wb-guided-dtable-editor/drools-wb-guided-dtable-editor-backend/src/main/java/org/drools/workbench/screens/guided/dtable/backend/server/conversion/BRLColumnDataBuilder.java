@@ -22,9 +22,10 @@ import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.DTCellValue52;
+import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.BRLColumnUtil;
 import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.ColumnContext;
 
-import static org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.Util.canSplit;
+import static org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.BRLColumnUtil.canThisColumnBeSplitToMultiple;
 
 public interface BRLColumnDataBuilder {
 
@@ -48,8 +49,8 @@ public interface BRLColumnDataBuilder {
     }
 
     static boolean canTheColumnBeSplitToSeparateColumns(final BRLColumn brlColumn) {
-        return (brlColumn instanceof BRLConditionColumn && canSplit((BRLConditionColumn) brlColumn))
-                || (brlColumn instanceof BRLActionColumn && canSplit((BRLActionColumn) brlColumn));
+        return (brlColumn instanceof BRLConditionColumn && canThisColumnBeSplitToMultiple((BRLConditionColumn) brlColumn))
+                || (brlColumn instanceof BRLActionColumn && BRLColumnUtil.canThisColumnBeSplitToMultiple((BRLActionColumn) brlColumn));
     }
 
     void build(final BRLActionColumn baseColumn,

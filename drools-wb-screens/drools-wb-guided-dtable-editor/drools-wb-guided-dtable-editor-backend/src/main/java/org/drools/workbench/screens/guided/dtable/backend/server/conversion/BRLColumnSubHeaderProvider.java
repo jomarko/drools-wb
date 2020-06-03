@@ -18,9 +18,10 @@ package org.drools.workbench.screens.guided.dtable.backend.server.conversion;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLActionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.BRLConditionColumn;
 import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTable52;
+import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.BRLColumnUtil;
 import org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.ColumnContext;
 
-import static org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.Util.canSplit;
+import static org.drools.workbench.screens.guided.dtable.backend.server.conversion.util.BRLColumnUtil.canThisColumnBeSplitToMultiple;
 
 public class BRLColumnSubHeaderProvider {
 
@@ -38,7 +39,7 @@ public class BRLColumnSubHeaderProvider {
         final BRLColumnSubHeaderBuilder builder = getBuilder(dtable,
                                                              brlColumn);
 
-        builder.brlConditions(brlColumn);
+        builder.buildBrlConditions(brlColumn);
     }
 
     public void getBRLColumnSubHeaderBuilder(final GuidedDecisionTable52 dtable,
@@ -46,12 +47,12 @@ public class BRLColumnSubHeaderProvider {
         final BRLColumnSubHeaderBuilder builder = getBuilder(dtable,
                                                              brlActionColumn);
 
-        builder.brlActions(brlActionColumn);
+        builder.buildBrlActions(brlActionColumn);
     }
 
     private BRLColumnSubHeaderBuilder getBuilder(final GuidedDecisionTable52 dtable,
                                                  final BRLConditionColumn brlColumn) {
-        if (canSplit(brlColumn)) {
+        if (canThisColumnBeSplitToMultiple(brlColumn)) {
             return new BRLColumnSubHeaderBuilderByPatterns(subHeaderBuilder,
                                                            columnContext,
                                                            dtable);
@@ -64,7 +65,7 @@ public class BRLColumnSubHeaderProvider {
 
     private BRLColumnSubHeaderBuilder getBuilder(final GuidedDecisionTable52 dtable,
                                                  final BRLActionColumn brlColumn) {
-        if (canSplit(brlColumn)) {
+        if (BRLColumnUtil.canThisColumnBeSplitToMultiple(brlColumn)) {
             return new BRLColumnSubHeaderBuilderByPatterns(subHeaderBuilder,
                                                            columnContext,
                                                            dtable);
