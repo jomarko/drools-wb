@@ -43,6 +43,11 @@ public abstract class TestBase {
         map.put("mortgages.mortgages.IncomeSource", makeModelFieldsIncomeSource());
         map.put("mortgages.mortgages.Applicant", makeModelFieldsApplicantSource());
 
+        map.put("com.myspace.covid19.Covid19Test", makeModelFieldsCovid19TestSource());
+        map.put("com.myspace.covid19.PoliceTransport", makeModelFieldsPoliceTransportSource());
+        map.put("com.myspace.covid19.Repatriant", makeModelFieldsRepatriantSource());
+        map.put("com.myspace.covid19.StateCaranteneBuilding", makeModelFieldsStateCaranteneBuildingSource());
+
         doReturn(map).when(dmo).getModuleModelFields();
 
         return dmo;
@@ -125,6 +130,110 @@ public abstract class TestBase {
                                                                           ModelField.FIELD_ORIGIN.DECLARED,
                                                                           FieldAccessorsAndMutators.BOTH,
                                                                           "String"));
+
+        return modelFields.toArray(new ModelField[modelFields.size()]);
+    }
+
+    private static ModelField[] makeModelFieldsCovid19TestSource() {
+        final List<ModelField> modelFields = Arrays.asList(new ModelField("personId",
+                                                                          "java.lang.String",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "String"),
+                                                           new ModelField("positiveResult",
+                                                                          "java.lang.Boolean",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "Boolean"),
+                                                           new ModelField("testedOnDate",
+                                                                          "java.util.Date",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "Date"));
+
+        return modelFields.toArray(new ModelField[modelFields.size()]);
+    }
+
+    private static ModelField[] makeModelFieldsPoliceTransportSource() {
+        final List<ModelField> modelFields = Arrays.asList(new ModelField("personalId",
+                                                                          "java.lang.String",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "String"),
+                                                           new ModelField("where",
+                                                                          "java.lang.String",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "String"));
+
+        return modelFields.toArray(new ModelField[modelFields.size()]);
+    }
+
+    private static ModelField[] makeModelFieldsRepatriantSource() {
+        final List<ModelField> modelFields = Arrays.asList(new ModelField("age",
+                                                                          "java.lang.Integer",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "Integer"),
+                                                           new ModelField("canCrossBorders",
+                                                                          "java.lang.Boolean",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "Boolean"),
+                                                           new ModelField("fromCountry",
+                                                                          "java.lang.String",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "String"),
+                                                           new ModelField("homeDistrict",
+                                                                          "java.lang.String",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "String"),
+                                                           new ModelField("personalId",
+                                                                          "java.lang.String",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "String"),
+                                                           new ModelField("smartCarantene",
+                                                                          "java.lang.Boolean",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "Boolean"));
+
+        return modelFields.toArray(new ModelField[modelFields.size()]);
+    }
+
+    private static ModelField[] makeModelFieldsStateCaranteneBuildingSource() {
+        final List<ModelField> modelFields = Arrays.asList(new ModelField("district",
+                                                                          "java.lang.String",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "String"),
+                                                           new ModelField("roomPricePerNight",
+                                                                          "java.lang.Integer",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "Integer"),
+                                                           new ModelField("isFull",
+                                                                          "java.lang.Boolean",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "Boolean"));
 
         return modelFields.toArray(new ModelField[modelFields.size()]);
     }

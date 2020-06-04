@@ -158,9 +158,9 @@ public class SubHeaderBuilder {
             addSetField((ActionSetFieldCol52) baseColumn);
         } else if (baseColumn instanceof ActionInsertFactCol52) {
             addInsert(baseColumn.getHeader(),
-                       ((ActionInsertFactCol52) baseColumn).getBoundName(),
-                       ((ActionInsertFactCol52) baseColumn).getFactType(),
-                       ((ActionInsertFactCol52) baseColumn).getFactField());
+                      ((ActionInsertFactCol52) baseColumn).getBoundName(),
+                      ((ActionInsertFactCol52) baseColumn).getFactType(),
+                      ((ActionInsertFactCol52) baseColumn).getFactField());
         } else if (baseColumn instanceof ActionWorkItemCol52) {
             addWorkItem((ActionWorkItemCol52) baseColumn);
         } else if (baseColumn instanceof ActionRetractFactCol52) {
@@ -169,7 +169,7 @@ public class SubHeaderBuilder {
     }
 
     public void addHeaderAndTitle(final String title,
-                                   final String header) {
+                                  final String header) {
         headerRow.createCell(targetColumnIndex)
                 .setCellValue(title);
 
@@ -205,7 +205,7 @@ public class SubHeaderBuilder {
                                                    builder.toString());
 
         addHeaderAndTitle(ACTION,
-                           column.getHeader());
+                          column.getHeader());
         fieldRow.createCell(targetColumnIndex).setCellValue(format);
     }
 
@@ -220,7 +220,7 @@ public class SubHeaderBuilder {
     private void addRetract(final ActionRetractFactCol52 column) {
 
         addHeaderAndTitle(ACTION,
-                           column.getHeader());
+                          column.getHeader());
         fieldRow.createCell(targetColumnIndex).setCellValue("retract( $param );");
     }
 
@@ -228,16 +228,16 @@ public class SubHeaderBuilder {
      * @return true if an insert was created.
      */
     public boolean addInsert(final String header,
-                              final String boundName,
-                              final String factType,
-                              final String factField) {
+                             final String boundName,
+                             final String factType,
+                             final String factField) {
         boolean madeInsert = false;
 
         if (columnContext.isBoundNameFree(boundName)) {
             madeInsert = true;
 
             addHeaderAndTitle(ACTION,
-                               "");
+                              "");
 
             fieldRow.createCell(targetColumnIndex).setCellValue(MessageFormat.format("{0} {1} = new {2}(); insert( {1} );",
                                                                                      factType,
@@ -249,42 +249,42 @@ public class SubHeaderBuilder {
         }
 
         addHeaderAndTitle(ACTION,
-                           header);
+                          header);
 
         fieldRow.createCell(targetColumnIndex).setCellValue(addSetMethod(boundName,
-                                                                          factField,
-                                                                          "$param"));
+                                                                         factField,
+                                                                         "$param"));
         return madeInsert;
     }
 
     private void addSetField(final ActionSetFieldCol52 column) {
 
         addSetField(column,
-                     "$param");
+                    "$param");
     }
 
     private void addWorkItemSetField(final ActionWorkItemSetFieldCol52 column) {
 
         addSetField(column,
-                     String.format("(%s) %s.getResult( \"Result\" )",
-                                   getColumnDataType(sourceColumnIndex),
-                                   getWorkItemParameterVariableName(column.getWorkItemName())));
+                    String.format("(%s) %s.getResult( \"Result\" )",
+                                  getColumnDataType(sourceColumnIndex),
+                                  getWorkItemParameterVariableName(column.getWorkItemName())));
     }
 
     private void addSetField(final ActionSetFieldCol52 column,
-                              final String value) {
+                             final String value) {
 
         addHeaderAndTitle(ACTION,
-                           column.getHeader());
+                          column.getHeader());
         fieldRow.createCell(targetColumnIndex).setCellValue(addSetMethod(column.getBoundName(),
-                                                                          column.getFactField(),
-                                                                          value));
+                                                                         column.getFactField(),
+                                                                         value));
     }
 
     public void addCondition(final ConditionCol52 column) {
 
         addHeaderAndTitle(CONDITION,
-                           column.getHeader());
+                          column.getHeader());
 
         if (column.getConstraintValueType() == TYPE_PREDICATE) {
 
@@ -356,15 +356,15 @@ public class SubHeaderBuilder {
     private void addMetadata(final MetadataCol52 column) {
 
         addHeaderAndTitle(METADATA,
-                           column.getHeader());
+                          column.getHeader());
 
         fieldRow.createCell(targetColumnIndex).setCellValue(String.format("%s( $param )",
                                                                           column.getMetadata()));
     }
 
     private String addSetMethod(final String boundName,
-                                 final String factField,
-                                 final String value) {
+                                final String factField,
+                                final String value) {
         return String.format("%s.set%s%s( %s );",
                              boundName,
                              factField.substring(0, 1).toUpperCase(),
