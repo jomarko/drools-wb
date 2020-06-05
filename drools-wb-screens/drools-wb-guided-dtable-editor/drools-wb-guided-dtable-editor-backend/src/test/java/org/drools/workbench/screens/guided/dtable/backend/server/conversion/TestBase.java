@@ -47,6 +47,7 @@ public abstract class TestBase {
         map.put("com.myspace.covid19.PoliceTransport", makeModelFieldsPoliceTransportSource());
         map.put("com.myspace.covid19.Repatriant", makeModelFieldsRepatriantSource());
         map.put("com.myspace.covid19.StateCaranteneBuilding", makeModelFieldsStateCaranteneBuildingSource());
+        map.put("com.myspace.covid19.Virus", makeModelFieldsVirusSource());
 
         doReturn(map).when(dmo).getModuleModelFields();
 
@@ -234,6 +235,35 @@ public abstract class TestBase {
                                                                           ModelField.FIELD_ORIGIN.DECLARED,
                                                                           FieldAccessorsAndMutators.BOTH,
                                                                           "Boolean"));
+
+        return modelFields.toArray(new ModelField[modelFields.size()]);
+    }
+
+    private static ModelField[] makeModelFieldsVirusSource() {
+        final List<ModelField> modelFields = Arrays.asList(new ModelField("name",
+                                                                          "java.lang.String",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "String"),
+                                                           new ModelField("severity",
+                                                                          "java.lang.String",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "String"),
+                                                           new ModelField("inffectedPeople",
+                                                                          "java.lang.Integer",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "Integer"),
+                                                           new ModelField("found",
+                                                                          "java.util.Date",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "Date"));
 
         return modelFields.toArray(new ModelField[modelFields.size()]);
     }
