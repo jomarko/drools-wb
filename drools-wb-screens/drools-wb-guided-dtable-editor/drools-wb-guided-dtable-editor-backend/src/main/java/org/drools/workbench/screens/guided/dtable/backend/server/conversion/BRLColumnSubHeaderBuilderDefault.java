@@ -130,6 +130,7 @@ public class BRLColumnSubHeaderBuilderDefault
         dt.getConditions().add(brlColumn);
         final ArrayList<DTCellValue52> list = new ArrayList<>();
         list.add(new DTCellValue52(1)); // Row number
+        list.add(new DTCellValue52("")); // Rule Name
         list.add(new DTCellValue52("")); // Description
 
         list.addAll(setUpVarNamesWithTemps(brlColumn.getChildColumns()));
