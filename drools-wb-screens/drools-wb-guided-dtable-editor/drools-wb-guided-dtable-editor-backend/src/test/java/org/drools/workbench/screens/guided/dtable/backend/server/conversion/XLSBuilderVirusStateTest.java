@@ -21,6 +21,7 @@ import org.drools.workbench.models.guided.dtable.shared.model.GuidedDecisionTabl
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.drools.workbench.screens.guided.dtable.backend.server.util.TestUtil.loadResource;
 import static org.junit.Assert.assertEquals;
 
@@ -59,7 +60,7 @@ public class XLSBuilderVirusStateTest
     @Test
     public void constraints() {
 
-        assertEquals("$v : Virus(name == \"$1\", inffectedPeople < $2)\n" +
+        assertEquals("$v : Virus(name == \"$1\", infectedPeople < $2)\n" +
                              "\t\tVirus( name == ( $v.name ) , found < \"$3\" )",
                      cell(7, 1).getStringCellValue().trim());
         assertEquals("$v.setSeverity(\"$1\")",
@@ -77,9 +78,15 @@ public class XLSBuilderVirusStateTest
     @Test
     public void content() {
 
-        assertEquals("European, 10000, 05-Jun-2020", cell(9, 1).getStringCellValue());
-        assertEquals("Asian, 100000, 05-Jun-2020", cell(10, 1).getStringCellValue());
-        assertEquals("Asian, 10000, 05-Jun-2020", cell(11, 1).getStringCellValue());
+        assertThat(cell(9, 1).getStringCellValue())
+                .startsWith("European, 10000.0, 0")
+                .endsWith("-Jun-2020");
+        assertThat(cell(9, 2).getStringCellValue())
+                .startsWith("Asian, 100000.0, 0")
+                .endsWith("-Jun-2020");
+        assertThat(cell(9, 3).getStringCellValue())
+                .startsWith("Asian, 10000.0, 0")
+                .endsWith("-Jun-2020");
 
         assertEquals("low", cell(9, 2).getStringCellValue());
         assertEquals("medium", cell(10, 2).getStringCellValue());

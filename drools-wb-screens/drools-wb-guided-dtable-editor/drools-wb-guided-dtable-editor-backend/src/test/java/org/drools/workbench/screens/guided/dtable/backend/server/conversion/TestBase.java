@@ -48,6 +48,7 @@ public abstract class TestBase {
         map.put("com.myspace.covid19.Repatriant", makeModelFieldsRepatriantSource());
         map.put("com.myspace.covid19.StateCaranteneBuilding", makeModelFieldsStateCaranteneBuildingSource());
         map.put("com.myspace.covid19.Virus", makeModelFieldsVirusSource());
+        map.put("com.myspace.covid19.Message", makeModelFieldsMessageSource());
 
         doReturn(map).when(dmo).getModuleModelFields();
 
@@ -252,18 +253,35 @@ public abstract class TestBase {
                                                                           ModelField.FIELD_ORIGIN.DECLARED,
                                                                           FieldAccessorsAndMutators.BOTH,
                                                                           "String"),
-                                                           new ModelField("inffectedPeople",
-                                                                          "java.lang.Integer",
+                                                           new ModelField("infectedPeople",
+                                                                          "java.lang.Double",
                                                                           ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
                                                                           ModelField.FIELD_ORIGIN.DECLARED,
                                                                           FieldAccessorsAndMutators.BOTH,
-                                                                          "Integer"),
+                                                                          "Double"),
+                                                           new ModelField("stillActive",
+                                                                          "java.lang.Boolean",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "Boolean"),
                                                            new ModelField("found",
                                                                           "java.util.Date",
                                                                           ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
                                                                           ModelField.FIELD_ORIGIN.DECLARED,
                                                                           FieldAccessorsAndMutators.BOTH,
                                                                           "Date"));
+
+        return modelFields.toArray(new ModelField[modelFields.size()]);
+    }
+
+    private static ModelField[] makeModelFieldsMessageSource() {
+        final List<ModelField> modelFields = Arrays.asList(new ModelField("result",
+                                                                          "java.lang.String",
+                                                                          ModelField.FIELD_CLASS_TYPE.TYPE_DECLARATION_CLASS,
+                                                                          ModelField.FIELD_ORIGIN.DECLARED,
+                                                                          FieldAccessorsAndMutators.BOTH,
+                                                                          "String"));
 
         return modelFields.toArray(new ModelField[modelFields.size()]);
     }
